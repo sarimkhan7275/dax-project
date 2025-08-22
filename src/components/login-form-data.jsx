@@ -1,5 +1,4 @@
-import { Eye, EyeOff } from 'lucide'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function LoginFormData() {
@@ -8,7 +7,7 @@ export default function LoginFormData() {
         password: "",
     })
     const [errors, setErrors] = useState({})
-    const [showPassword, setShowPassword] = useState(false)
+    const [credentials, setCredentials] = useState(null)
 
     const validateUsername = (username) => {
         if (!username.trim()) {
@@ -21,13 +20,19 @@ export default function LoginFormData() {
     }
 
     const validatePassword = (password) => {
-        if (!password) {
-            return "Password is required"
+        if (password.length < 8) {
+            return "Password must be at least 8 characters long";
         }
-        if (!/^[a-zA-Z0-9@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]*$/.test(password)) {
-            return "Password can only contain alphanumeric characters and special characters"
+
+        if (!/\d/.test(password)) {
+            return "Password must contain at least one number";
         }
-        return undefined
+
+        if (!/[a-zA-Z]/.test(password)) {
+            return "Password must contain at least one letter";
+        }
+
+        return undefined;
     }
 
 
@@ -35,15 +40,49 @@ export default function LoginFormData() {
         setFormData((prev) => ({ ...prev, [field]: value }))
     }
 
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+
+        const newErrors = {}
+
+        const usernameError = validateUsername(formData.username)
+        const passwordError = validatePassword(formData.password)
+
+        if (usernameError) newErrors.username = usernameError
+        if (passwordError) newErrors.password = passwordError
+
+        setErrors(newErrors)
+
+        if (Object.keys(newErrors).length === 0 && credentials && credentials?.length>0) {
+            for(let i=0; i<credentials.length; i++){
+                if(credentials[i].username == formData.username && credentials[i].password == formData.password){
+                    alert("Login Successful")
+                    break;
+                }
+            }
+        }
+    }
+
+
+    useEffect(()=>{
+        const cred_data = JSON.parse(localStorage.getItem("credentials"))
+        setCredentials(cred_data)
+        console.log(cred_data)
+    },[])
+
+    console.log(credentials)
+
   return (
-    <div className='w-full max-w-4xl bg-white shadow-lg overflow-hidden ' > 
+    <div className='w-full max-w-[90%] md:max-w-4xl bg-white shadow-lg overflow-hidden ' > 
         <div className='bg-teal-700 text-white text-center py-6 w-full ' >
             <h1 className='text-2xl ' >Login </h1>
             <p>Sign in to continue</p>
         </div>
 
-        <div className='p-8 ' >
-            <form className='space-y-6 max-w-md mx-auto ' >
+        <div className='p-8 md:p-8 ' >
+            <form onSubmit={handleSubmit} className='space-y-6 max-w-md mx-auto ' >
                 <div className="space-y-2">
                     <div className="relative">
                     <input
@@ -60,7 +99,7 @@ export default function LoginFormData() {
                 <div className="space-y-2">
                     <div className="relative">
                         <input
-                            type={showPassword ? "text" : "password"}
+                            type={"text"}
                             placeholder="NEW PASSWORD"
                             value={formData.password}
                             onChange={(e) => handleInputChange("password", e.target.value)}
