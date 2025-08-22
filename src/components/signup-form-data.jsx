@@ -222,7 +222,7 @@ export default function SignUpFormData() {
                 <div className="text-center pt-2">
                     <p className="text-gray-600 text-sm">
                     {"Already have an account? "}
-                    <Link to="/login" className="text-teal-700 hover:text-teal-800 font-medium underline">
+                    <Link to="/" className="text-teal-700 hover:text-teal-800 font-medium underline">
                         Login
                     </Link>
                     </p>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function LoginFormData() {
     const [formData, setFormData] = useState({
@@ -8,6 +8,7 @@ export default function LoginFormData() {
     })
     const [errors, setErrors] = useState({})
     const [credentials, setCredentials] = useState(null)
+    const nav = useNavigate()
 
     const validateUsername = (username) => {
         if (!username.trim()) {
@@ -56,11 +57,18 @@ export default function LoginFormData() {
         setErrors(newErrors)
 
         if (Object.keys(newErrors).length === 0 && credentials && credentials?.length>0) {
+            let isAuth = false
             for(let i=0; i<credentials.length; i++){
                 if(credentials[i].username == formData.username && credentials[i].password == formData.password){
-                    alert("Login Successful")
+                    isAuth = true
                     break;
                 }
+            }
+            if(isAuth){
+                alert("Login Successful")
+                nav("/home")
+            }else{
+                alert("Wrong Credentials")
             }
         }
     }
@@ -69,10 +77,8 @@ export default function LoginFormData() {
     useEffect(()=>{
         const cred_data = JSON.parse(localStorage.getItem("credentials"))
         setCredentials(cred_data)
-        console.log(cred_data)
     },[])
 
-    console.log(credentials)
 
   return (
     <div className='w-full max-w-[90%] md:max-w-4xl bg-white shadow-lg overflow-hidden ' > 

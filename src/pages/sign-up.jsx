@@ -1,5 +1,4 @@
 import React from 'react'
-import LoginFormData from '../components/login-form-data'
 import SignUpFormData from '../components/signup-form-data'
 
 export default function SignUp() {
