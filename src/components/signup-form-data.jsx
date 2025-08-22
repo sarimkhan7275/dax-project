@@ -116,7 +116,7 @@ export default function SignUpFormData() {
             const cred_data = localStorage.getItem("credentials") || []
             cred_data.push(formData)
             localStorage.setItem("credentials", JSON.stringify(cred_data))
-            navigate("/login")
+            navigate("/")
         }
     }
 
